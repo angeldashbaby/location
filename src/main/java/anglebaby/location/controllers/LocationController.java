@@ -19,6 +19,7 @@ public class LocationController {
     @PostMapping
     public String findLocation(@RequestBody String payload) {
         try {
+//            System.out.println("test");
             return service.findLocation(payload);
         } catch (IOException e) {
             throw new RuntimeException(e);

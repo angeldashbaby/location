@@ -2,8 +2,10 @@ package anglebaby.location.services;
 
 import anglebaby.location.model.Location;
 import anglebaby.location.model.LocationList;
+import anglebaby.location.security.JwtAccessTokenService;
 import com.google.gson.JsonObject;
 import org.json.JSONArray;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,14 @@ import java.util.ArrayList;
 
 @Service
 public class LocationService {
-    private String token = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlJwd2NXa1JObVNnWEVOVGtOVUdPNiJ9.eyJpc3MiOiJodHRwczovL2Rldi1rbmlndWk3ei51cy5hdXRoMC5jb20vIiwic3ViIjoiNUNjNnFCb0ZacWhLVkwxVmMxaXoySW42NW03S1V3ME1AY2xpZW50cyIsImF1ZCI6Imh0dHBzOi8vbWVudS9BUEkiLCJpYXQiOjE2NjY0Mjc3MzksImV4cCI6MTY2NjUxNDEzOSwiYXpwIjoiNUNjNnFCb0ZacWhLVkwxVmMxaXoySW42NW03S1V3ME0iLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.QMjiGBMVeCkr_J6dyG2lfhU6X2axrLIZYbIyZTd7Q0VyDY4e4gUUvsc0zJHHbL0cCic4KETN523_WtPmmXNF6Y__YxqbObGjlwJfuMa1o2goNYWVtguhCd3zFyXw_yLIhjbT-CHS9lSdR0wC7xhZlc_Yzk4fF5OglMBSe8336wBQXzjUjDvcw8lPajm6bs_ssV9t435EECM5yZ2LCRQt8kuu0aZ7o5JK95DioCm2iqBJrPDt4d69R4obgsx8QmbiGEHcROV7aojENAmcT2K-ZsRTWtAl42CVriZMVg5wTryajuqw1BWDRIzwwsxCSsjtzZnY0gQv-x2sWJT1cgZRXg";
+
+    @Autowired
+    private JwtAccessTokenService jwtAccessTokenService;
+    private String token = null;
 
     public String findLocation(String payload) throws IOException {
         JSONObject request = new JSONObject(payload);
-
+        token = getAccessToken();
         LocationList locationList = getRequest(new URL("http://localhost:8095/api/location"));
         Location freeLocation = locationList.findFreeLocation();
         JSONObject answer = new JSONObject();
@@ -61,6 +66,10 @@ public class LocationService {
             locationList.addLocation(jsonObj.toString());
         }
         return locationList;
+    }
+
+    public String getAccessToken() {
+        return jwtAccessTokenService.requestAccessToken();
     }
 
     public void postRequest(JSONObject jsonObject, URL url) throws IOException {
