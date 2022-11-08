@@ -1,4 +1,4 @@
-package com.example.demo;
+package anglebaby.location;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
